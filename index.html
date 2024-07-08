@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game - Fast Version</title>
+    <title>Snake Game - Slower Version</title>
     <style>
         canvas {
             border: 1px solid black;
@@ -56,7 +56,7 @@
                     ctx.font = "30px Arial";
                     ctx.fillText("Game Over!", canvas.width / 2 - 70, canvas.height / 2);
                 }
-            }, 1000 / 15);  // Update 15 times per second
+            }, 1000 / 10);  // Update 10 times per second
         }());
 
         window.addEventListener('keydown', ((evt) => {
@@ -73,7 +73,7 @@
             this.tail = [];
 
             this.draw = function() {
-                ctx.fillStyle = "#FFFFFF";
+                ctx.fillStyle = "#0000FF";  // Snake color set to blue
                 for (let i=0; i<this.tail.length; i++) {
                     ctx.fillRect(this.tail[i].x, this.tail[i].y, scale, scale);
                 }
