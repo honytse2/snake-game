@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game - Slower Version</title>
+    <title>Snake Game - Improved Version</title>
     <style>
         canvas {
             border: 1px solid black;
@@ -15,6 +15,7 @@
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
         }
     </style>
 </head>
@@ -33,7 +34,7 @@
         let fruit;
         let gameOver = false;
 
-        (function setup() {
+        function setup() {
             snake = new Snake();
             fruit = new Fruit();
             fruit.pickLocation();
@@ -49,7 +50,7 @@
                         fruit.pickLocation();
                     }
 
-                    gameOver = snake.checkCollision();
+                    snake.checkCollision();
                 }
                 if (gameOver) {
                     ctx.fillStyle = "black";
@@ -57,12 +58,12 @@
                     ctx.fillText("Game Over!", canvas.width / 2 - 70, canvas.height / 2);
                 }
             }, 1000 / 10);  // Update 10 times per second
-        }());
+        }
 
-        window.addEventListener('keydown', ((evt) => {
+        window.addEventListener('keydown', (evt) => {
             const direction = evt.key.replace('Arrow', '');
             snake.changeDirection(direction);
-        }));
+        });
 
         function Snake() {
             this.x = 0;
@@ -86,10 +87,25 @@
                     this.tail[i] = this.tail[i+1];
                 }
 
-                this.tail[this.total - 1] = { x: this.x, y: this.y };
+                if (this.total > 0) {
+                    this.tail[this.total - 1] = { x: this.x, y: this.y };
+                }
 
                 this.x += this.xSpeed;
                 this.y += this.ySpeed;
+
+                // Wrap around the edges
+                if (this.x < 0) {
+                    this.x = canvas.width - scale;
+                } else if (this.x >= canvas.width) {
+                    this.x = 0;
+                }
+
+                if (this.y < 0) {
+                    this.y = canvas.height - scale;
+                } else if (this.y >= canvas.height) {
+                    this.y = 0;
+                }
             }
 
             this.changeDirection = function(direction) {
@@ -130,15 +146,11 @@
             }
 
             this.checkCollision = function() {
-                if (this.x < 0 || this.x >= canvas.width || this.y < 0 || this.y >= canvas.height) {
-                    return true;
-                }
                 for (let i=0; i<this.tail.length; i++) {
                     if (this.x === this.tail[i].x && this.y === this.tail[i].y) {
-                        return true;
+                        gameOver = true;
                     }
                 }
-                return false;
             }
         }
 
@@ -147,8 +159,8 @@
             this.y;
 
             this.pickLocation = function() {
-                this.x = (Math.floor(Math.random() * columns - 1) + 1) * scale;
-                this.y = (Math.floor(Math.random() * rows - 1) + 1) * scale;
+                this.x = (Math.floor(Math.random() * columns)) * scale;
+                this.y = (Math.floor(Math.random() * rows)) * scale;
             }
 
             this.draw = function() {
@@ -156,6 +168,8 @@
                 ctx.fillRect(this.x, this.y, scale, scale)
             }
         }
+
+        setup();
     </script>
 </body>
 </html>
